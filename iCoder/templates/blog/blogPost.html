@@ -2,12 +2,14 @@
 {% block title %}blogHome{% endblock title %}
 {% block blogactive %}active {% endblock blogactive %}
 {% block body %}
+ {% load humanize %} 
 <div class="container my-2">
     <h2 class="blog-post-title">{{post.title}}</h2>
     <p class="blog-post-meta">{{post.timestamp}} by <a href="#">{{post.author}}</a></p>
     <p>{{post.content}}</p>
 
     <h2>Comments</h2>
+    {% if request.user.is_authenticated %}
     <div class="form-group">
         <form action="/blog/postComment" method="post">{% csrf_token %}
             <h5>Post your comments</h5>
@@ -16,13 +18,18 @@
             <input class="btn btn-primary" type="Submit" value="Submit">
         </form>
     </div>
+
+    {% else %}
+    <p>Please login to post your comments</p>
+    {% endif %}
+    
     {% for comment in comments   %}
     <div class="row">
         <div class="col-md-1">
         <img  class="rounded w-100" src="/static/user.jpg" alt="user">
         </div>
         <div class="row">
-        <div class="col-md-11">{{comment.User.username}}</div>
+        <div class="col-md-11">{{comment.User.username}} at {{comment.timestamp |naturaltime}}</div>
         <div class="col-md-11">{{comment.comment}}</div>
         </div>
     </div>
