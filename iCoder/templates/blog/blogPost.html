@@ -2,7 +2,7 @@
 {% block title %}blogHome{% endblock title %}
 {% block blogactive %}active {% endblock blogactive %}
 {% block body %}
- {% load humanize %} 
+{% load humanize %}
 <div class="container my-2">
     <h2 class="blog-post-title">{{post.title}}</h2>
     <p class="blog-post-meta">{{post.timestamp}} by <a href="#">{{post.author}}</a></p>
@@ -13,26 +13,52 @@
     <div class="form-group">
         <form action="/blog/postComment" method="post">{% csrf_token %}
             <h5>Post your comments</h5>
-            <input type="text" class="form-control" name="comment"  placeholder="Comment">
+            <input type="text" class="form-control" name="comment" placeholder="Comment">
             <input type="hidden" name="postSno" value={{post.sno}}>
-            <input class="btn btn-primary" type="Submit" value="Submit">
+            <input type="hidden" name="parentSno" value="">
+            <input class="btn btn-primary my-2" type="Submit" value="Submit">
+
         </form>
+
     </div>
 
     {% else %}
     <p>Please login to post your comments</p>
     {% endif %}
-    
+
     {% for comment in comments   %}
-    <div class="row">
+    <div class="row my-3">
         <div class="col-md-1">
-        <img  class="rounded w-100" src="/static/user.jpg" alt="user">
+            <img class="rounded mx-auto d-block p-2 w-100 border-border-dark" src="/static/user.jpg" alt="user">
         </div>
-        <div class="row">
-        <div class="col-md-11">{{comment.User.username}} at {{comment.timestamp |naturaltime}}</div>
-        <div class="col-md-11">{{comment.comment}}</div>
+        <div class="col-md-11">
+            <b>{{comment.User.username}}</b> <span
+                class="badge-badge-secondry">{{comment.timestamp |naturaltime}}</span>
+            <div>{{comment.comment}}</div>
+            <div class="reply mx-0">
+                <button class="btn-sm btn-primary" type="button" data-toggle="collapse"
+                    data-target="#reply{{comment.sno}}" aria-expanded="false" aria-controls="reply{{comment.sno}}">
+                    Reply
+                </button>
+                <div class="collapse" id="reply{{comment.sno}}">
+                    <div class="card card-body my-2">
+                        <form action="/blog/postComment" method="post">{% csrf_token %}
+                            <div class="form-group">
+                                <label for="comment">Post a reply</label>
+                                <input type="text" class="form-control" name="comment" placeholder="reply">
+                                <input type="hidden" name="parentSno" value="{{comment.sno}}">
+                            </div>
+                            <input type="hidden" name="postSno" value={{post.sno}}>
+                            <input class="btn btn-primary my-2" type="Submit" value="Submit">
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
+
+
     {% endfor %}
 </div>
 
