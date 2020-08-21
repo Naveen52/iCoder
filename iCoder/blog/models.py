@@ -22,6 +22,10 @@ class blogComments(models.Model):
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
     timestamp= models.DateTimeField(default=now)
 
+    def __str__(self):
+        return self.comment
+    
+
 
 
 
